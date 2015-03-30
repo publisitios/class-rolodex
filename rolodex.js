@@ -113,6 +113,7 @@ server.on('connection', function(client) { //'connection' listener
                                                 contacts.splice(indexToDelete, 1) 
                                                 client.write("Contact info for " + username + " has been deleted!\n");
                                                 console.log("Contact info for " + username + " has been deleted!\n");
+                                                save(contacts);
                                                 
                                             } else {
                                                 var tempArray = [];

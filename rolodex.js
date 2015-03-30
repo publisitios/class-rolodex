@@ -157,6 +157,10 @@ server.on('connection', function(client) { //'connection' listener
                             } else if (newContact.email === null) {
                                 newContact.email = stringFromClient.trim();
                                 // console.log(newContact); // debuging 
+                                client.write("What is the contact's LinkedIn URL :  \n");
+                            } else if (newContact.linkedin === null) {
+                                newContact.linkedin = stringFromClient.trim();
+                                // console.log(newContact); // debuging 
                                 client.write("What is the contact's Facebook URL :  \n");
                             } else if (newContact.facebook === null) {
                                 newContact.facebook = stringFromClient.trim();

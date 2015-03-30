@@ -36,15 +36,18 @@ server.on('connection', function(client) { //'connection' listener
             client.write(" -Type 'list' to view registered contacts.\n");
             client.write(" -Type 'view' 'CONTACT' to view that person's contact details.\n");
             client.write(" -Type 'add' to register a new contact.\n");
-            client.write(" -Type 'delete' 'CONTACT' to delete that contact.\n\n");
+            client.write(" -Type 'delete' 'CONTACT' to delete that contact.\n");
             client.write(" -Type 'exit' to close the connection to the server.\n\n");
 
             client.on('data', function(stringFromClient) {
+ 
+                    // sanitize the user's input
+                    var str1 = stringFromClient.trim(); // remove nasty characters from the end of the file
+                    var input = str1.toLowerCase(); // convert to lower case to make more user friendly
 
                     if (newContact.active === false) {
 
-                        console.log("received input: " + stringFromClient);
-                        var input = stringFromClient.trim(); // remove nasty characters from the end of the file
+                        console.log("received input: " + input);
                         // console.log(str1); //debuging
                         var inputArray = input.split(" "); //convert input into an array  
                         // console.log(inputArray); //debuging
@@ -58,7 +61,7 @@ server.on('connection', function(client) { //'connection' listener
                             case "list":
                                 if (contacts.length > 0) {
                                     contacts.forEach(function(entry) {
-                                        client.write(entry.username + "\n");
+                                        client.write("- "+entry.username + "\n");
                                     });
                                 } else {
                                     client.write("\nNo contacts...\n");
@@ -75,6 +78,7 @@ server.on('connection', function(client) { //'connection' listener
                                             client.write("Contact Full Name: " + entry.fullname + "\n");
                                             client.write("Contact E-Mail: " + entry.email + "\n");
                                             client.write("Contact Phone: " + entry.phone + "\n");
+                                            client.write("Contact LinkedIn: " + entry.linkedin + "\n");
                                             client.write("Contact Facebook: " + entry.facebook + "\n");
                                             client.write("Contact Location: " + entry.city + "\n");
                                         } else {
@@ -131,8 +135,8 @@ server.on('connection', function(client) { //'connection' listener
                                 break;
 
                             default:
-                            console.log("\nIncorrect command. Try `list`, `view USERNAME`, `add` or `delete`\n");
-                            client.write("\nIncorrect command. Try `list`, `view USERNAME  `, `add` or `delete`\n");
+                            console.log("\nIncorrect command. Try `list` , `view USERNAME` , `add` , `delete USERNAME` or `exit`\n");
+                            client.write("\nIncorrect command. Try `list` , `view USERNAME` , `add` , `delete USERNAME` or `exit`\n");
                     
                         } // end switch
 
@@ -140,38 +144,38 @@ server.on('connection', function(client) { //'connection' listener
 
                             // console.log("adding new contact , received input: " + input);
 
-                            if (newContact.fullname === null && stringFromClient.trim() != "add") {
+                            if (newContact.fullname === null && input != "add") {
 
-                                console.log(stringFromClient.trim());
+                                console.log(input);
 
-                                newContact.fullname = stringFromClient.trim();
+                                newContact.fullname = input;
 
                                 // console.log(newContact.fullname); // debuging
 
-                                var usernameArray = stringFromClient.trim().split(" "); //convert fullname into an array  
+                                var usernameArray = input.split(" "); //convert fullname into an array  
                                 // console.log(usernameArray); //debuging
                                 newContact.username = usernameArray[0]; // username is fist word of the array
                                 // console.log(newContact); // debuging  
 
                                 client.write("What is the contact's E-Mail :  \n");
                             } else if (newContact.email === null) {
-                                newContact.email = stringFromClient.trim();
+                                newContact.email = input;
                                 // console.log(newContact); // debuging 
                                 client.write("What is the contact's LinkedIn URL :  \n");
                             } else if (newContact.linkedin === null) {
-                                newContact.linkedin = stringFromClient.trim();
+                                newContact.linkedin = input;
                                 // console.log(newContact); // debuging 
                                 client.write("What is the contact's Facebook URL :  \n");
                             } else if (newContact.facebook === null) {
-                                newContact.facebook = stringFromClient.trim();
+                                newContact.facebook = input;
                                 // console.log(newContact); // debuging 
                                 client.write("What is the contact's Telephone :  \n");
                             } else if (newContact.phone === null) {
-                                newContact.phone = stringFromClient.trim();
+                                newContact.phone = input;
                                 // console.log(newContact); // debuging
                                 client.write("What is the contact's Location :  \n");
                             } else if (newContact.city === null) {
-                                newContact.city = stringFromClient.trim();
+                                newContact.city = input;
                                 if (newContact.city !== null) {
                                     console.log(newContact);
                                     contacts.push(newContact);
